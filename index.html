@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="FrameFlow — A premium cinematic architectural walkthrough powered by a 400-frame interactive scroll canvas.">
+  <meta name="theme-color" content="#101722">
+  <title>FrameFlow — Cinematic Architectural Journey</title>
+
+  <!-- Google Fonts: Instrument Serif & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Fullscreen Loading Experience -->
+  <div id="loading-screen" class="loading-screen" aria-live="polite">
+    <div class="loader-container">
+      <div class="loader-brand">FRAMEFLOW</div>
+      <h1 class="loader-title">Preparing<br>the journey.</h1>
+      
+      <div class="loader-divider" aria-hidden="true"></div>
+      
+      <div class="loader-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar-container">
+        <div class="loader-bar" id="loader-bar"></div>
+      </div>
+      
+      <div class="loader-footer">
+        <span class="loader-label" id="loader-status">Loading frames</span>
+        <span class="loader-percent" id="loader-percent">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fallback / Error State for Missing Frames -->
+  <div id="error-screen" class="error-screen hidden" aria-live="assertive">
+    <div class="error-container">
+      <div class="error-brand">FRAMEFLOW</div>
+      <h2 class="error-title">Frame sequence not found</h2>
+      <p class="error-message">
+        Add <code>frame_0001.jpg</code> through <code>frame_0400.jpg</code> to the <code>/frames/</code> folder.
+      </p>
+    </div>
+  </div>
+
+  <!-- Fixed Canvas Engine Viewport -->
+  <div class="canvas-viewport" aria-hidden="true">
+    <canvas id="sequence-canvas"></canvas>
+    <div class="canvas-vignette"></div>
+  </div>
+
+  <!-- Top Persistent Header / HUD -->
+  <header class="site-header" id="site-header">
+    <div class="header-left">
+      <a href="#" class="brand-logo" aria-label="FrameFlow Home">FRAMEFLOW</a>
+      <span class="brand-sub">Architectural Walkthrough</span>
+    </div>
+    
+    <div class="header-right">
+      <div class="frame-hud" aria-label="Current frame status">
+        <span class="hud-tag">SEQUENCE</span>
+        <span class="hud-frame" id="hud-frame-num">FRAME 0001 / 0400</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Interactive Content Overlay pinned above canvas -->
+  <div class="ui-layer" id="ui-layer">
+    
+    <!-- Section Cards (Populated & Synchronized with config) -->
+    <div class="sections-container" id="sections-container">
+      <!-- Section 01: Hall -->
+      <article class="section-card section-right" id="section-hall" data-section-id="hall">
+        <div class="glass-panel">
+          <div class="card-eyebrow">
+            <span class="accent-line"></span>
+            <span class="card-counter">01 / 03 &nbsp;HALL</span>
+          </div>
+          <h2 class="card-title">A measured entrance</h2>
+          <p class="card-desc">The hall establishes the rhythm, scale, and first impression of the journey.</p>
+        </div>
+      </article>
+
+      <!-- Section 02: Room -->
+      <article class="section-card section-left" id="section-room" data-section-id="room">
+        <div class="glass-panel">
+          <div class="card-eyebrow">
+            <span class="accent-line"></span>
+            <span class="card-counter">02 / 03 &nbsp;ROOM</span>
+          </div>
+          <h2 class="card-title">Space to settle</h2>
+          <p class="card-desc">The room opens the sequence into a quieter, more intimate layer of the interior.</p>
+        </div>
+      </article>
+
+      <!-- Section 03: Kitchen -->
+      <article class="section-card section-right" id="section-kitchen" data-section-id="kitchen">
+        <div class="glass-panel">
+          <div class="card-eyebrow">
+            <span class="accent-line"></span>
+            <span class="card-counter">03 / 04 &nbsp;KITCHEN</span>
+          </div>
+          <h2 class="card-title">The final detail</h2>
+          <p class="card-desc">The kitchen closes the journey with material, light, and practical detail.</p>
+        </div>
+      </article>
+
+      <!-- Section 04: Developer / Salman (Final Page: Left Content, Right Full Image) -->
+      <article class="section-card developer-split-section" id="section-developer" data-section-id="developer">
+        
+        <!-- Left Side: Developer Info -->
+        <div class="dev-content-col">
+          <div class="glass-panel dev-panel">
+            <div class="card-eyebrow">
+              <span class="accent-line"></span>
+              <span class="card-counter">04 / 04 &nbsp;CREATOR</span>
+            </div>
+            
+            <h2 class="card-title dev-name">Salman</h2>
+            <p class="dev-role">Creative Technologist & UI Engineer</p>
+
+            <p class="card-desc dev-bio">
+              Architecting high-performance digital spaces, real-time canvas rendering, and physics-driven interactive storytelling.
+            </p>
+
+            <div class="dev-tags">
+              <span class="dev-tag">HTML5 Canvas</span>
+              <span class="dev-tag">Vanilla JS</span>
+              <span class="dev-tag">60 FPS Render</span>
+              <span class="dev-tag">Interaction Design</span>
+              <span class="dev-tag">Creative Dev</span>
+            </div>
+
+            <div class="dev-actions">
+              <a href="mailto:contact@salman.dev" class="dev-btn primary-btn" aria-label="Contact Salman">
+                <span>Get in Touch</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17l9.2-9.2M17 17V8H8"/></svg>
+              </a>
+              <button type="button" class="dev-btn secondary-btn" id="restart-journey-btn" aria-label="Replay walkthrough from beginning">
+                <span>Replay Journey</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Full Developer Image Frame -->
+        <div class="dev-image-col">
+          <div class="glass-panel dev-photo-frame">
+            <div class="dev-photo-wrap">
+              <img src="salman.jpeg" alt="Salman — Creator & Developer" class="dev-full-photo">
+              <div class="dev-photo-badge">
+                <span class="dev-status-pulse" aria-hidden="true"></span>
+                <span class="dev-photo-caption">Salman • Lead Developer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </article>
+    </div>
+
+    <!-- Vertical Section Navigation (Right Side Rail) -->
+    <nav class="section-nav" id="section-nav" aria-label="Section Navigation">
+      <div class="nav-track-line" aria-hidden="true"></div>
+      <ul class="nav-list" id="nav-list" role="list">
+        <!-- Dots are bound in script.js according to config -->
+      </ul>
+    </nav>
+
+    <!-- Scroll Hint at Start -->
+    <div class="scroll-hint" id="scroll-hint" aria-hidden="true">
+      <span class="scroll-dash">—</span>
+      <span class="scroll-label">SCROLL</span>
+      <div class="scroll-mouse-icon">
+        <div class="scroll-wheel"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tall Virtual Scroll Container -->
+  <main class="scroll-track" id="scroll-track" aria-hidden="true"></main>
+
+  <script src="script.js"></script>
+</body>
+</html>
